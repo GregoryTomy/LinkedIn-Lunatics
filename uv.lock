@@ -685,6 +685,8 @@ dependencies = [
     { name = "py-gutenberg" },
     { name = "pymongo" },
     { name = "pytesseract" },
+    { name = "pytest" },
+    { name = "pytest-dependency" },
     { name = "python-dotenv" },
     { name = "tqdm" },
     { name = "zenml", extra = ["server"] },
@@ -706,6 +708,8 @@ requires-dist = [
     { name = "py-gutenberg", specifier = ">=1.0.3" },
     { name = "pymongo", specifier = "==4.6.2" },
     { name = "pytesseract", specifier = ">=0.3.13" },
+    { name = "pytest", specifier = ">=8.2.2" },
+    { name = "pytest-dependency", specifier = ">=0.6.0" },
     { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "tqdm", specifier = ">=4.67.1" },
     { name = "zenml", extras = ["server"], specifier = "==0.67.0" },
@@ -1444,6 +1448,16 @@ sdist = { url = "https://files.pythonhosted.org/packages/a6/58/e993ca5357553c966
 wheels = [
     { url = "https://files.pythonhosted.org/packages/4e/e7/81ebdd666d3bff6670d27349b5053605d83d55548e6bd5711f3b0ae7dd23/pytest-8.2.2-py3-none-any.whl", hash = "sha256:c434598117762e2bd304e526244f67bf66bbd7b5d6cf22138be51ff661980343", size = 339873 },
 ]
+
+[[package]]
+name = "pytest-dependency"
+version = "0.6.0"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "pytest" },
+    { name = "setuptools" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7e/3b/317cc04e77d707d338540ca67b619df8f247f3f4c9f40e67bf5ea503ad94/pytest-dependency-0.6.0.tar.gz", hash = "sha256:934b0e6a39d95995062c193f7eaeed8a8ffa06ff1bcef4b62b0dc74a708bacc1", size = 19499 }
 
 [[package]]
 name = "python-dateutil"

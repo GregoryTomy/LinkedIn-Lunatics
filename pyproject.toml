@@ -12,6 +12,8 @@ dependencies = [
     "py-gutenberg>=1.0.3",
     "pymongo==4.6.2",
     "pytesseract>=0.3.13",
+    "pytest-dependency>=0.6.0",
+    "pytest>=8.2.2",
     "python-dotenv>=1.0.1",
     "tqdm>=4.67.1",
     "zenml[server]==0.67.0",
