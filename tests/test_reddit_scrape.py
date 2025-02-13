@@ -1,10 +1,10 @@
 import pytest
 import os
 import praw
-from src.scraper import (
+from src.scraper_module import (
     initialize_reddit,
     ScraperConfig,
-    fetch_reddit_posts,
+    fetch_posts,
     load_config,
     get_mongo_collection,
 )

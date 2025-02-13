@@ -2,7 +2,7 @@ import pytest
 import os
 
 from requests.api import get
-from src.scraper import get_mongo_collection, ScraperConfig, load_config
+from src.scraper_module import get_mongo_collection, load_config
 from dotenv import load_dotenv
 
 
