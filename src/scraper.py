@@ -7,17 +7,10 @@ from dotenv import load_dotenv
 from pymongo import MongoClient
 import praw
 from tqdm import tqdm
-from zenml import pipeline, step
 from dataclasses import dataclass
 from loguru import logger
 
 
-MONGO_AUTH_SOURCE = os.getenv("MONGO_AUTH_SOURCE")
-MONGO_USERNAME = os.getenv("MONGO_USERNAME")
-MONGO_PASSWORD = os.getenv("MONGO_PASSWORD")
-
-
-@dataclass
 class ScraperConfig:
     client_id: str
     client_secret: str
@@ -28,7 +21,7 @@ class ScraperConfig:
     mongo_password: str
     mongo_authSource: str
     subreddit_name: str = "LinkedInLunatics"
-    limit: int = 2
+    limit: int = 100
     sleep_seconds: float = 0.0
 
 
@@ -54,7 +47,10 @@ def get_mongo_collection(config: ScraperConfig):
         authSource=config.mongo_authSource,
     )
     database = client[config.mongo_database]
-    return database[config.collection_name]
+
+    collection = database[config.collection_name]
+
+    return collection
 
 
 def initialize_reddit(config: ScraperConfig) -> praw.Reddit:
@@ -101,33 +97,36 @@ def download_images(posts: list, config: ScraperConfig):
         try:
             response = requests.get(post["url"], timeout=10)
             if response.status_code == 200:
-                image_bytes = BytesIO(response.content)
-                post["image_bytes"] = image_bytes
+                image_path = os.path.join("data/images", f"{post['post_id']}.jpeg")
+                with open(image_path, "wb") as file:
+                    file.write(response.content)
+                post["image_path"] = image_path
                 downloaded_images.append(post)
         except Exception as e:
-            print(f"Failed to download image {post['post_id']}: {e}")
+            logger.exception(f"Failed to download image {post['post_id']}: {e}")
 
     return downloaded_images
 
 
-def extract_text_from_images(posts: list[dict]) -> list[dict]:
+def extract_text_from_images(image_data: list[dict]) -> list[dict]:
     extracted_data = []
-    for post in tqdm(posts, desc="Extracting Text"):
-        try:
-            image = Image.open(post["image_bytes"])
-            text = pytesseract.image_to_string(
-                image, config="--oem 3 --psm 6 -l eng"
-            ).strip()
-            post["text"] = text
-            extracted_data.append(post)
-        except Exception as e:
-            print(f"Error processing {post['image_path']}: {e}")
+    for post in tqdm(image_data, desc="Extracting Text"):
+        # try:
+        image_path = post["image_path"]
+        image = Image.open(image_path)
 
+        text = pytesseract.image_to_string(
+            image, config="--oem 3 --psm 6 -l eng"
+        ).strip()
+        post["text"] = text
+        extracted_data.append(post)
+        # except Exception as e:
+        #     print(f"Error processing {post['post_id']}: {e}")
     return extracted_data
 
 
-def store_in_mongodb(posts: list, collection):
-    for post in tqdm(posts, desc="Storing in MongoDB"):
+def store_in_mongodb(extracted_text_data: list, collection):
+    for post in tqdm(extracted_text_data, desc="Storing in MongoDB"):
         if post.get("text") and len(post["text"]) > 50:
             try:
                 collection.insert_one(post)

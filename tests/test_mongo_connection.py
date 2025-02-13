@@ -11,9 +11,4 @@ config = load_config()
 
 def test_mongo_connection():
     collection = get_mongo_collection(config)
-
-    try:
-        _ = collection.estimated_document_count()
-        assert True
-    except Exception as e:
-        pytest.fail(f"MongoDB conection failed: {e}")
+    assert isinstance(collection, list), "Did not return a list of collection ids"

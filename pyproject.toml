@@ -16,7 +16,7 @@ dependencies = [
     "pytest>=8.2.2",
     "python-dotenv>=1.0.1",
     "tqdm>=4.67.1",
-    "zenml[server]==0.67.0",
+    "zenml[server]>=0.74.0",
 ]
 
 [dependency-groups]
