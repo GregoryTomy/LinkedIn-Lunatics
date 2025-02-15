@@ -1,8 +1,6 @@
 # data
 data/images
 
-# P
-
 .env
 __pycache__/
 *.py[oc]

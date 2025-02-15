@@ -2,8 +2,6 @@ from dataclasses import dataclass
 from typing import Optional
 from pathlib import Path
 
-from loguru import logger
-
 
 @dataclass(frozen=True)
 class ScraperConfig:

@@ -1,3 +1,7 @@
+from typing import List
+from typing_extensions import Annotated
+from loguru import logger
+
 import src.scraper_module as scraper
 from zenml import step, pipeline
 
@@ -8,16 +12,22 @@ def setup_config() -> scraper.ScraperConfig:
 
 
 @step
-def get_reddit_posts(config: scraper.ScraperConfig):
+def get_reddit_posts(
+    config: scraper.ScraperConfig,
+) -> Annotated[List[scraper.RedditPost], "Reddit Posts"]:
     collection = scraper.get_mongo_collection(config)
     existing_ids = {doc["post_id"] for doc in collection.find({}, {"post_id": 1})}
+
+    logger.info(f"{len(existing_ids)} existing ids.")
     reddit_instance = scraper.initialize_reddit(config)
     reddit_posts = scraper.fetch_posts(config, reddit_instance, existing_ids)
     return reddit_posts
 
 
 @step
-def process_reddit_posts(config: scraper.ScraperConfig, posts):
+def process_reddit_posts(
+    config: scraper.ScraperConfig, posts
+) -> Annotated[List[scraper.ProcessedPost], "Extracted Text"]:
     image_data = scraper.download_images(posts, config)
     text_data = scraper.extract_text(image_data, config)
 
